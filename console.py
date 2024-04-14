@@ -115,63 +115,28 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-    
-    try:
-        if not arg:
-            raise SyntaxError("class name missing")
-
-        # Split the argument string into class name and parameters
-        arg_list = arg.split()
-        class_name = arg_list[0]
-
-        # Check if the class exists
-        if class_name not in self.classes:
-            raise NameError(f"class '{class_name}' doesn't exist")
-
-        # Initialize empty dictionary for keyword arguments
-        kwargs = {}
-
-        # Parse parameters
-        for param in arg_list[1:]:
-            # Split parameter into key and value
-            key, value = param.split('=')
-
-            # Handle string values
-            if value.startswith('"') and value.endswith('"'):
-                # Replace underscores with spaces
-                value = value.replace('_', ' ')
-                # Remove double quotes and escape any internal double quotes
-                value = value[1:-1].replace('\\"', '"')
-
-            # Handle float values
-            elif '.' in value:
-                try:
-                    value = float(value)
-                except ValueError:
-                    print(f"Warning: Invalid value for parameter '{key}' - skipping")
+        if not args:
+            print("** class name missing **")
+            return
+        args_array = args.split()
+        class_name = args_array[0]
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+        new_instance = HBNBCommand.classes[class_name]()
+        for param_index in range(1, len(args_array)):
+            param_array = args_array[param_index].split("=")
+            if len(param_array) == 2:
+                key = param_array[0]
+                if key not in HBNBCommand.valid_keys[class_name]:
                     continue
-
-            # Handle integer values
+                value = self.parse_value(param_array[1])
+                if value is not None:
+                    setattr(new_instance, key, value)
             else:
-                try:
-                    value = int(value)
-                except ValueError:
-                    print(f"Warning: Invalid value for parameter '{key}' - skipping")
-                    continue
-
-            # Add key-value pair to kwargs dictionary
-            kwargs[key] = value
-
-        # Create an instance of the specified class with the parsed parameters
-        new_instance = self.classes[class_name](**kwargs)
+                pass
         new_instance.save()
         print(new_instance.id)
-
-    except SyntaxError as se:
-        print(f"Error: {se}")
-    except NameError as ne:
-        print(f"Error: {ne}")
-
 
     def help_create(self):
         """ Help information for the create method """
