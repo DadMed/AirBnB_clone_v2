@@ -6,7 +6,9 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from models.place import Place
 from models.review import Review
+from os import getenv
 
+storage_type = getenv("HBNB_TYPE_STORAGE")
 
 class User(BaseModel):
     """This class defines a user by various attributes"""
