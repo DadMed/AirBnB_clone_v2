@@ -9,24 +9,26 @@ from models.city import City
 import shlex
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     """ State class """
-    __tablename__ = "states"
-    name = Column(String(128), nullable=False)
-    cities = relationship("City", cascade='all, delete, delete-orphan',
-                          backref="state")
 
-    @property
-    def cities(self):
-        var = models.storage.all()
-        lista = []
-        result = []
-        for key in var:
-            city = key.replace('.', ' ')
-            city = shlex.split(city)
-            if (city[0] == 'City'):
-                lista.append(var[key])
-        for elem in lista:
-            if (elem.state_id == self.id):
-                result.append(elem)
-        return (result)
+    if storage_type == "db":
+        __tablename__ = 'states'
+        name = Column(String(128), nullable=False)
+        cities = relationship('City', cascade="all,delete", backref="state")
+    else:
+        name = ""
+        # DONE: for FileStorage: getter attribute cities that
+        # returns the list of City instances with state_id equals
+        # to the current State.id => It will be the FileStorage
+        # relationship between State and City
+
+        @property
+        def cities(self):
+            """getter docuemnt"""
+            citiesList = []
+            citiesAll = storage.all(City)
+            for city in citiesAll.values():
+                if city.state_id == self.id:
+                    citiesList.append(city)
+            return citiesList
