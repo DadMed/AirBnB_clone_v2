@@ -118,68 +118,56 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """Create an object of any class"""
+        """
+        Create an object of any class
+        """
         if not args:
             print("** class name missing **")
-        return
+            return
 
-    # Split arguments by spaces
-    arg_list = args.split()
+        arg_list = args.split()
+        class_name = arg_list[0]
 
-    # Get the class name from the first argument
-    class_name = arg_list[0]
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
 
-    # Check if the class exists
-    if class_name not in HBNBCommand.classes:
-        print("** class doesn't exist **")
-        return
+        arg_list = arg_list[1:]
+        obj_kwargs = {}
 
-    # Remove the class name from the argument list
-    arg_list = arg_list[1:]
-
-    # Initialize dictionary to store object attributes
-    obj_kwargs = {}
-
-    # Iterate over remaining arguments to extract key-value pairs
-    for arg in arg_list:
-        # Split argument by '=' to separate key and value
-        key_value = arg.split('=')
-        if len(key_value) != 2:
-            print(f"Invalid argument: {arg}. Skipping.")
-            continue
-
-        key = key_value[0]
-        value = key_value[1]
-
-        # Check if the key is a valid attribute of the class
-        if key not in BaseModel.__dict__:
-            print(f"Invalid attribute: {key}. Skipping.")
-            continue
-
-        # Convert value to the appropriate type
-        if isinstance(BaseModel.__dict__[key], int):
-            try:
-                value = int(value)
-            except ValueError:
-                print(f"Invalid value for {key}: {value}. Skipping.")
+        for arg in arg_list:
+            key_value = arg.split('=')
+            if len(key_value) != 2:
+                print(f"Invalid argument: {arg}. Skipping.")
                 continue
-        elif isinstance(BaseModel.__dict__[key], float):
-            try:
-                value = float(value)
-            except ValueError:
-                print(f"Invalid value for {key}: {value}. Skipping.")
+
+            key = key_value[0]
+            value = key_value[1]
+
+            if key not in BaseModel.__dict__:
+                print(f"Invalid attribute: {key}. Skipping.")
                 continue
-        elif isinstance(BaseModel.__dict__[key], str):
-            # Remove quotes and replace underscores with spaces for str value
-            value = value.strip('"').replace('_', ' ')
 
-        # Add key-value pair to the dictionary
-        obj_kwargs[key] = value
+            if isinstance(BaseModel.__dict__[key], int):
+                try:
+                    value = int(value)
+                except ValueError:
+                    print(f"Invalid value for {key}: {value}. Skipping.")
+                    continue
+            elif isinstance(BaseModel.__dict__[key], float):
+                try:
+                    value = float(value)
+                except ValueError:
+                    print(f"Invalid value for {key}: {value}. Skipping.")
+                    continue
+            elif isinstance(BaseModel.__dict__[key], str):
+                value = value.strip('"').replace('_', ' ')
 
-    # Create an instance of the class with the extracted attributes
-    new_instance = HBNBCommand.classes[class_name](**obj_kwargs)
-    new_instance.save()
-    print(new_instance.id)
+            obj_kwargs[key] = value
+
+        new_instance = HBNBCommand.classes[class_name](**obj_kwargs)
+        new_instance.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
