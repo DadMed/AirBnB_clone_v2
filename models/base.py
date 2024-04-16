@@ -3,7 +3,7 @@
 import uuid
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DATETIME
 from models import storage_type
 
 Base = declarative_base()
@@ -21,12 +21,12 @@ class BaseModel:
                 nullable=False,
                 primary_key=True,
                 unique=True)
-    created_at = Column(DateTime,
+    created_at = Column(DATETIME,
                         nullable=False,
-                        default=datetime.utcnow)
-    updated_at = Column(DateTime,
+                        default=datetime.utcnow())
+    updated_at = Column(DATETIME,
                         nullable=False,
-                        default=datetime.utcnow)
+                        default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """a new model"""
@@ -41,11 +41,11 @@ class BaseModel:
                 elif k != '__class__':
                     setattr(self, k, kwargs[k])
             if storage_type == 'db':
-                if not hasattr(self, 'id'):
+                if not hasattr(kwargs, 'id'):
                     setattr(self, 'id', str(uuid.uuid4()))
-                if not hasattr(self, 'created_at'):
+                if not hasattr(kwargs, 'created_at'):
                     setattr(self, 'created_at', datetime.now())
-                if not hasattr(self, 'updated_at'):
+                if not hasattr(kwargs, 'updated_at'):
                     setattr(self, 'updated_at', datetime.now())
 
     def __str__(self):
@@ -60,18 +60,4 @@ class BaseModel:
         storage.new(self)
         storage.save()
 
-    def to_dict(self):
-        """Convert instance into dictionary format"""
-        dct = self.__dict__.copy()
-        dct['__class__'] = self.__class__.__name__
-        for k in dct:
-            if isinstance(dct[k], datetime):
-                dct[k] = dct[k].isoformat()
-        if '_sa_instance_state' in dct.keys():
-            del dct['_sa_instance_state']
-        return dct
-
-    def delete(self):
-        """Delete the current instance from the storage"""
-        from models import storage
-        storage.delete(self)
+    def to_dic
