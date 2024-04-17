@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-'''the database storage engine'''
+'''database storage engine'''
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -63,7 +63,7 @@ class DBStorage:
         return dct
 
     def new(self, obj):
-        '''add the obj to the current db session'''
+        '''adds the obj to the current db session'''
         if obj is not None:
             try:
                 self.__session.add(obj)
@@ -78,7 +78,7 @@ class DBStorage:
         self.__session.commit()
 
     def delete(self, obj=None):
-        ''' delete from the current databse session the obj
+        ''' deletes from the current databse session the obj
             is it's not None
         '''
         if obj is not None:
@@ -86,12 +86,12 @@ class DBStorage:
                 type(obj).id == obj.id).delete()
 
     def reload(self):
-        '''reload the database'''
+        '''reloads the database'''
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         self.__session = scoped_session(session_factory)()
 
     def close(self):
-        """close the working SQLAlchemy session"""
+        """closes the working SQLAlchemy session"""
         self.__session.close()

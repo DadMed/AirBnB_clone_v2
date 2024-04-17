@@ -59,7 +59,7 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        ''' delete the object obj from the attribute
+        ''' deletes the object obj from the attribute
             __objects if it's inside it
         '''
         if obj is None:
@@ -69,5 +69,5 @@ class FileStorage:
             del self.__objects[obj_key]
 
     def close(self):
-        """to call the reload method"""
+        """Call the reload method"""
         self.reload()
