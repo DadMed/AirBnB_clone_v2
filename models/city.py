@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 """This is the city class"""
+from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-from models.base_model import BaseModel, Base
 from models.place import Place
 from models import storage
 
 
-class City(BaseModel):
+class City(BaseModel, Base):
     """This is the class for City
     Attributes:
         state_id: The state id
