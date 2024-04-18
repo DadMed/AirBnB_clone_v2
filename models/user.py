@@ -12,7 +12,7 @@ class User(BaseModel, Base):
     """This is the class for user
     Attributes:
         email: email address
-        password: password for you login
+        password: password for your login
         first_name: first name
         last_name: last name
     """
@@ -25,3 +25,4 @@ class User(BaseModel, Base):
                           backref="user")
     reviews = relationship("Review", cascade='all, delete, delete-orphan',
                            backref="user")
+
