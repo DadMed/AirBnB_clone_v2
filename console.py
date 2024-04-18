@@ -113,7 +113,7 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Create an object of any class"""
+        """ Create a specific object of any class based """
         try:
             if not args:
                 raise SyntaxError()
