@@ -10,9 +10,9 @@ import shlex
 
 
 class State(BaseModel, Base):
-    """This is the class for State
+    """This is a class for states
     Attributes:
-        name: input name
+        name: name of state to be input
     """
     __tablename__ = "states"
     name = Column(String(128), nullable=False)

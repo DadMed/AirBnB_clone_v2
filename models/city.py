@@ -9,10 +9,10 @@ from models.place import Place
 
 
 class City(BaseModel, Base):
-    """This is the class for City
+    """This is a class for a city to be related to a state
     Attributes:
-        state_id: The state id
-        name: input name
+        state_id: The id of the stated related to the city 
+        name: city name to be input
     """
     __tablename__ = "cities"
     name = Column(String(128), nullable=False)
