@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """This is the file storage class for AirBnB"""
 import json
-import shlex
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -9,6 +8,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+import shlex
 
 
 class FileStorage:
@@ -21,24 +21,20 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    __classes = {
-        "BaseModel": BaseModel,
-        "User": User,
-        "State": State,
-        "City": City,
-        "Amenity": Amenity,
-        "Place": Place,
-        "Review": Review
-    }
-
     def all(self, cls=None):
         """returns a dictionary
         Return:
             returns a dictionary of __object
         """
+        dic = {}
         if cls:
-            return {key: obj for key, obj in self.__objects.items()
-                    if isinstance(obj, cls)}
+            dictionary = self.__objects
+            for key in dictionary:
+                partition = key.replace('.', ' ')
+                partition = shlex.split(partition)
+                if (partition[0] == cls.__name__):
+                    dic[key] = self.__objects[key]
+            return (dic)
         else:
             return self.__objects
 
@@ -47,8 +43,9 @@ class FileStorage:
         Args:
             obj: given object
         """
-        key = "{}.{}".format(type(obj).__name__, obj.id)
-        self.__objects[key] = obj
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            self.__objects[key] = obj
 
     def save(self):
         """serialize the file path to JSON file path
@@ -60,15 +57,13 @@ class FileStorage:
             json.dump(my_dict, f)
 
     def reload(self):
-        """deserialize the file path to JSON file path
+        """serialize the file path to JSON file path
         """
         try:
             with open(self.__file_path, 'r', encoding="UTF-8") as f:
-                json_dict = json.load(f)
-                for key, value in json_dict.items():
-                    class_name = value["__class__"]
-                    if class_name in self.__classes:
-                        self.__objects[key] = self.__classes[class_name](**value)
+                for key, value in (json.load(f)).items():
+                    value = eval(value["__class__"])(**value)
+                    self.__objects[key] = value
         except FileNotFoundError:
             pass
 
@@ -83,4 +78,3 @@ class FileStorage:
         """ calls reload()
         """
         self.reload()
-
