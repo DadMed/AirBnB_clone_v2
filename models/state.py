@@ -8,6 +8,7 @@ from sqlalchemy.orm import relationship
 
 
 class State(BaseModel, Base):
+<<<<<<< HEAD
     """ State class / table model"""
     __tablename__ = 'states'
     if storage_type == 'db':
@@ -16,6 +17,16 @@ class State(BaseModel, Base):
                               cascade='all, delete, delete-orphan')
     else:
         name = ''
+=======
+    """This is a class for states
+    Attributes:
+        name: name of state to be input
+    """
+    __tablename__ = "states"
+    name = Column(String(128), nullable=False)
+    cities = relationship("City", cascade='all, delete, delete-orphan',
+                          backref="state")
+>>>>>>> b8e5c771846ed8674acc1919da431306245aec87
 
         @property
         def cities(self):
